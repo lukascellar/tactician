@@ -3,7 +3,6 @@
 namespace Cellar\Tactician\DI;
 
 use Cellar\Tactician\Handler\ContainerBasedHandlerLocator;
-use League\Tactician\Bernard\QueueMiddleware;
 use League\Tactician\CommandBus;
 use League\Tactician\Handler\CommandHandlerMiddleware;
 use League\Tactician\Handler\CommandNameExtractor\ClassNameExtractor;
@@ -68,7 +67,15 @@ final class TacticianExtension extends CompilerExtension
 		 */
 		if (class_exists('League\Tactician\Bernard\QueueMiddleware')) {
 			$builder->addDefinition($this->prefix('middleware.queue'))
-				->setClass(QueueMiddleware::class);
+				->setClass('League\Tactician\Bernard\QueueMiddleware');
+		}
+
+		/**
+		 * TransactionMiddleware
+		 */
+		if (class_exists('League\Tactician\Doctrine\ORM\TransactionMiddleware')) {
+			$builder->addDefinition($this->prefix('middleware.doctrine'))
+				->setClass('League\Tactician\Doctrine\ORM\TransactionMiddleware');
 		}
 
 		foreach ($config['commandbus'] as $name => $commandBusConfig) {
