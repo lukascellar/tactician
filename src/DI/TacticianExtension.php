@@ -33,13 +33,13 @@ final class TacticianExtension extends CompilerExtension
 		 * MethodNameInflector
 		 */
 		$builder->addDefinition($this->prefix('method_name_inflector'))
-			->setClass(HandleInflector::class);
+			->setType(HandleInflector::class);
 
 		/**
 		 * HandlerLocator
 		 */
 		$builder->addDefinition($this->prefix('handler_locator'))
-			->setClass(ContainerBasedHandlerLocator::class)
+			->setType(ContainerBasedHandlerLocator::class)
 			->setArguments([
 				'commandToServiceIdMapping' => $this->getCommandHandlerMap()
 			]);
@@ -48,34 +48,34 @@ final class TacticianExtension extends CompilerExtension
 		 * CommandNameExtractor
 		 */
 		$builder->addDefinition($this->prefix('class_name_extractor'))
-			->setClass(ClassNameExtractor::class);
+			->setType(ClassNameExtractor::class);
 
 		/**
 		 * LockingMiddleware
 		 */
 		$builder->addDefinition($this->prefix('middleware.locking'))
-			->setClass(LockingMiddleware::class);
+			->setType(LockingMiddleware::class);
 
 		/**
 		 * CommandHandlerMiddleware
 		 */
 		$builder->addDefinition($this->prefix('middleware.command_handler'))
-			->setClass(CommandHandlerMiddleware::class);
+			->setType(CommandHandlerMiddleware::class);
 
 		/**
 		 * QueueMiddleware
 		 */
-		if (class_exists('League\Tactician\Bernard\QueueMiddleware')) {
+		if ($builder->getByType('League\Tactician\Bernard\QueueMiddleware', false) !== null) {
 			$builder->addDefinition($this->prefix('middleware.queue'))
-				->setClass('League\Tactician\Bernard\QueueMiddleware');
+				->setType('League\Tactician\Bernard\QueueMiddleware');
 		}
 
 		/**
 		 * TransactionMiddleware
 		 */
-		if (class_exists('League\Tactician\Doctrine\ORM\TransactionMiddleware')) {
+        if ($builder->getByType('League\Tactician\Doctrine\ORM\TransactionMiddleware', false) !== null) {
 			$builder->addDefinition($this->prefix('middleware.doctrine'))
-				->setClass('League\Tactician\Doctrine\ORM\TransactionMiddleware');
+				->setType('League\Tactician\Doctrine\ORM\TransactionMiddleware');
 		}
 
 		foreach ($config['commandbus'] as $name => $commandBusConfig) {
@@ -93,7 +93,7 @@ final class TacticianExtension extends CompilerExtension
 		$middleware = isset($config['middleware']) ? $config['middleware'] : [];
 
 		$builder->addDefinition($this->prefix('commandbus' . $name))
-			->setClass(CommandBus::class)
+			->setType(CommandBus::class)
 			->setArguments([
 				$middleware
 			]);
