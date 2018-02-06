@@ -65,7 +65,7 @@ final class TacticianExtension extends CompilerExtension
 		/**
 		 * QueueMiddleware
 		 */
-		if ($builder->getByType('League\Tactician\Bernard\QueueMiddleware', false) !== null) {
+		if (class_exists('League\Tactician\Bernard\QueueMiddleware')) {
 			$builder->addDefinition($this->prefix('middleware.queue'))
 				->setType('League\Tactician\Bernard\QueueMiddleware');
 		}
@@ -73,7 +73,7 @@ final class TacticianExtension extends CompilerExtension
 		/**
 		 * TransactionMiddleware
 		 */
-        if ($builder->getByType('League\Tactician\Doctrine\ORM\TransactionMiddleware', false) !== null) {
+		if (class_exists('League\Tactician\Doctrine\ORM\TransactionMiddleware')) {
 			$builder->addDefinition($this->prefix('middleware.doctrine'))
 				->setType('League\Tactician\Doctrine\ORM\TransactionMiddleware');
 		}
@@ -92,7 +92,7 @@ final class TacticianExtension extends CompilerExtension
 		$builder = $this->getContainerBuilder();
 		$middleware = isset($config['middleware']) ? $config['middleware'] : [];
 
-		$builder->addDefinition($this->prefix('commandbus' . $name))
+		$builder->addDefinition($this->prefix('commandbus.' . $name))
 			->setType(CommandBus::class)
 			->setArguments([
 				$middleware
