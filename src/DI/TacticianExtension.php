@@ -3,6 +3,7 @@
 namespace Cellar\Tactician\DI;
 
 use Cellar\Tactician\Handler\ContainerBasedHandlerLocator;
+use Cellar\Tactician\Middleware\EventDispatcherMiddleware;
 use League\Tactician\CommandBus;
 use League\Tactician\Handler\CommandHandlerMiddleware;
 use League\Tactician\Handler\CommandNameExtractor\ClassNameExtractor;
@@ -76,6 +77,14 @@ final class TacticianExtension extends CompilerExtension
 		if (class_exists('League\Tactician\Doctrine\ORM\TransactionMiddleware')) {
 			$builder->addDefinition($this->prefix('middleware.doctrine'))
 				->setType('League\Tactician\Doctrine\ORM\TransactionMiddleware');
+		}
+
+		/**
+		 * EventDispatcherMiddleware
+		 */
+		if ($builder->getByType('Symfony\Component\EventDispatcher\EventDispatcherInterface') !== null) {
+			$builder->addDefinition($this->prefix('middleware.events'))
+				->setType(EventDispatcherMiddleware::class);
 		}
 
 		foreach ($config['commandbus'] as $name => $commandBusConfig) {
